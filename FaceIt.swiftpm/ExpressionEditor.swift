@@ -3,6 +3,7 @@
 //  FaceIt
 //
 //  Created by Apollo Zhu on 1/30/22.
+//  Adapted from 2017 Stanford CS193p open course.
 //
 
 import SwiftUI
