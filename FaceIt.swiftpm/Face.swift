@@ -9,19 +9,23 @@
 import SwiftUI
 
 struct Face: Shape {
-    let eyesOpen: Bool
-    /// -1.0 (frown) to 1.0 (smile)
-    let mouthCurvature: Double
+    private var eyesOpenPercentage: Double
+    private var mouthCurvature: Double
     
+    /// - Parameters:
+    ///   - mouthCurvature: -1.0 (full frown) to 1.0 (full smile)
     public init(eyesOpen: Bool = false,
                 mouthCurvature: Double = 0.0) {
-        self.eyesOpen = eyesOpen
+        self.eyesOpenPercentage = eyesOpen ? 1 : 0
         self.mouthCurvature = max(-1, min(mouthCurvature, 1))
     }
     
-    private struct Skull {
-        let center: CGPoint
-        let radius: CGFloat
+    var animatableData: AnimatablePair<Double, Double> {
+        get { .init(eyesOpenPercentage, mouthCurvature) }
+        set {
+            eyesOpenPercentage = newValue.first
+            mouthCurvature = newValue.second
+        }
     }
     
     func path(in rect: CGRect) -> Path {
@@ -35,6 +39,11 @@ struct Face: Shape {
             path.addPath(pathForEye(.right, in: skull))
             path.addPath(pathForMouth(in: skull))
         }
+    }
+    
+    private struct Skull {
+        let center: CGPoint
+        let radius: CGFloat
     }
     
     private func pathForSkull(_ skull: Skull) -> Path {
@@ -64,10 +73,14 @@ struct Face: Shape {
         }
         let eyeRadius = skull.radius / Ratios.skullRadiusToEyeRadius
         return Path { path in
-            if eyesOpen {
-                path.addArc(center: eyeCenter, radius: eyeRadius,
-                            startAngle: .zero, endAngle: .degrees(360),
-                            clockwise: true)
+            if eyesOpenPercentage > 0 {
+                let height = eyeRadius * 2 * eyesOpenPercentage
+                path.addEllipse(in: CGRect(
+                    x: eyeCenter.x - eyeRadius,
+                    y: eyeCenter.y - height / 2,
+                    width: eyeRadius * 2,
+                    height: height
+                ))
             } else {
                 path.move(to: CGPoint(x: eyeCenter.x - eyeRadius,
                                       y: eyeCenter.y))

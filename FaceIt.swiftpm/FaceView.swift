@@ -12,6 +12,7 @@ struct FaceView: View {
     @State var expression = FacialExpression(eyes: .open, mouth: .neutral)
     @State var scale: CGFloat = 0.9
     @GestureState private var magnifyBy: CGFloat = 1.0
+    @State var isBlinking: Bool = false
     
     var body: some View {
         Face(eyesOpen: eyesOpen,
@@ -33,8 +34,9 @@ struct FaceView: View {
                     }
             )
             .onTapGesture {
-                expression = FacialExpression(eyes: eyesOpen ? .closed : .open,
-                                              mouth: expression.mouth)
+                withAnimation {
+                    eyesOpen.toggle()
+                }
             }
             .gesture(
                 // This is more like "pan" than "swipe", but there's no swipe...
@@ -43,15 +45,32 @@ struct FaceView: View {
                         let yOffset = value.translation.height
                         // This behavior is different from CS193p;
                         // It moves the mouth instead of the "happiness" value
-                        if yOffset > 0 {
-                            // swipe down
-                            expression = expression.happier
-                        } else if yOffset < 0 {
-                            // swipe up
-                            expression = expression.sadder
+                        withAnimation {
+                            if yOffset > 0 {
+                                // swipe down
+                                expression = expression.happier
+                            } else if yOffset < 0 {
+                                // swipe up
+                                expression = expression.sadder
+                            }
                         }
                     }
             )
+            .onAppear {
+                isBlinking = true
+            }
+            .onDisappear {
+                isBlinking = false
+            }
+            .simultaneousGesture(
+                TapGesture(count: 2)
+                    .onEnded {
+                        isBlinking.toggle()
+                    }
+            )
+            .onChange(of: isBlinking) { newValue in 
+                blinkIfNeeded()
+            }
     }
     
     private var finalScale: CGFloat {
@@ -59,11 +78,33 @@ struct FaceView: View {
     }
     
     private var eyesOpen: Bool {
-        switch expression.eyes {
-        case .open:
-            return true
-        case .closed, .squinting:
-            return false
+        get {
+            switch expression.eyes {
+            case .open:
+                return true
+            case .closed, .squinting:
+                return false
+            }
+        }
+        nonmutating set {
+            expression = FacialExpression(eyes: newValue ? .open : .closed,
+                                          mouth: expression.mouth)
+        }
+    }
+    
+    private func blinkIfNeeded() {
+        guard isBlinking else { return }
+        withAnimation(.easeInOut(duration: 0.4)) {
+            eyesOpen = false
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            guard isBlinking else { return }
+            withAnimation(.easeInOut(duration: 0.4)) {
+                eyesOpen = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                blinkIfNeeded()
+            }
         }
     }
     
