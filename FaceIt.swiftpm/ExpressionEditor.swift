@@ -61,6 +61,7 @@ struct ExpressionEditor: View {
                     } label: {
                         Text("Done")
                     }
+                    .disabled(name.isEmpty)
                 }
             }
         }

@@ -10,11 +10,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State var emotions: [Emotion] = [
-        Emotion(name: NSLocalizedString("Sad", comment: ""),
+        Emotion(name: String(localized: "Sad"),
                 expression: FacialExpression(eyes: .closed, mouth: .frown)),
-        Emotion(name: NSLocalizedString("Happy", comment: ""),
+        Emotion(name: String(localized: "Happy"),
                 expression: FacialExpression(eyes: .open, mouth: .smile)),
-        Emotion(name: NSLocalizedString("Worried", comment: ""),
+        Emotion(name: String(localized: "Worried"),
                 expression: FacialExpression(eyes: .open, mouth: .smirk)),
     ]
     @State var showEditor = false
@@ -32,13 +32,24 @@ struct ContentView: View {
                         .navigationTitle(emotion.name)
                     }
                 }
+                .onDelete { offsets in
+                    emotions.remove(atOffsets: offsets)
+                }
+                .onMove { source, destination in
+                    emotions.move(fromOffsets: source, toOffset: destination)
+                }
             }
             .navigationTitle("Emotions")
             .toolbar {
-                Button {
-                    showEditor = true
-                } label: {
-                    Label("Add", systemImage: "plus")
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showEditor = true
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
+                }
+                ToolbarItem(placement: .navigation) {
+                    EditButton()
                 }
             }
             .sheet(isPresented: $showEditor) {

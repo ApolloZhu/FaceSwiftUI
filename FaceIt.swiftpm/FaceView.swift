@@ -94,6 +94,8 @@ struct FaceView: View {
                         shakeHead()
                     }
             )
+            .accessibilityLabel(Text("Face"))
+            .accessibilityValue(Text("\(expression.mouth.localizedName), \(expression.eyes.localizedName)"))
     }
     
     private var finalScale: CGFloat {

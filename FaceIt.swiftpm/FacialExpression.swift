@@ -22,14 +22,14 @@ struct FacialExpression {
     enum Eyes: CaseIterable {
         case open, closed, squinting
         
-        var localizedName: LocalizedStringKey {
+        var localizedName: String {
             switch self {
             case .open:
-                return "Eyes Open"
+                return String(localized: "Eyes Open")
             case .closed:
-                return "Eyes Closed"
+                return String(localized: "Eyes Closed")
             case .squinting:
-                return "Squinting"
+                return String(localized: "Squinting")
             }
         }
     }
@@ -44,18 +44,18 @@ struct FacialExpression {
             Mouth(rawValue: rawValue + 1) ?? .smile
         }
         
-        var localizedName: LocalizedStringKey {
+        var localizedName: String {
             switch self {
             case .frown:
-                return "Frown"
+                return String(localized: "Frown")
             case .smirk:
-                return "Smirk"
+                return String(localized: "Smirk")
             case .neutral:
-                return "Neutral"
+                return String(localized: "Neutral")
             case .grin:
-                return "Grin"
+                return String(localized: "Grin")
             case .smile:
-                return "Smile"
+                return String(localized: "Smile")
             }
         }
     }
