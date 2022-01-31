@@ -9,42 +9,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var emotions: [Emotion] = [
+        Emotion(name: NSLocalizedString("Sad", comment: ""),
+                expression: FacialExpression(eyes: .closed, mouth: .frown)),
+        Emotion(name: NSLocalizedString("Happy", comment: ""),
+                expression: FacialExpression(eyes: .open, mouth: .smile)),
+        Emotion(name: NSLocalizedString("Worried", comment: ""),
+                expression: FacialExpression(eyes: .open, mouth: .smirk)),
+    ]
+    @State var showEditor = false
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(BuiltinEmotions.allCases, id: \.self) { emotion in
-                    NavigationLink(emotion.localizedName) {
-                        FaceView(expression: emotion.expression)
-                            .navigationTitle(emotion.localizedName)
+                ForEach($emotions) { $emotion in
+                    NavigationLink(emotion.name) {
+                        FaceView(expression: Binding {
+                            emotion.expression
+                        } set: { newValue in
+                            emotion = Emotion(id: emotion.id, name: emotion.name, expression: newValue)
+                        })
+                        .navigationTitle(emotion.name)
                     }
                 }
             }
             .navigationTitle("Emotions")
-        }
-    }
-    
-    private enum BuiltinEmotions: CaseIterable {
-        case sad, happy, worried
-        
-        var localizedName: LocalizedStringKey {
-            switch self {
-            case .sad:
-                return "Sad"
-            case .happy:
-                return "Happy"
-            case .worried:
-                return "Worried"
+            .toolbar {
+                Button {
+                    showEditor = true
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
             }
-        }
-        
-        var expression: FacialExpression {
-            switch self {
-            case .sad:
-                return FacialExpression(eyes: .closed, mouth: .frown)
-            case .happy:
-                return FacialExpression(eyes: .open, mouth: .smile)
-            case .worried:
-                return FacialExpression(eyes: .open, mouth: .smirk)
+            .sheet(isPresented: $showEditor) {
+                ExpressionEditor() { emotion in
+                    emotions.append(emotion)
+                }
             }
         }
     }

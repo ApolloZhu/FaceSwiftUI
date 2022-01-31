@@ -9,11 +9,12 @@
 import SwiftUI
 
 struct FaceView: View {
-    @State var expression = FacialExpression(eyes: .open, mouth: .neutral)
+    @Binding var expression: FacialExpression
     @State var scale: CGFloat = 0.9
     @GestureState private var magnifyBy: CGFloat = 1.0
-    @State var isBlinking: Bool = false
+    @State private var squintingEyesOpen = false
     @State var headRotation: Angle = .zero
+    private(set) var backgroundColor = Color(uiColor: UIColor.systemBackground)
     
     var body: some View {
         Face(eyesOpen: eyesOpen,
@@ -22,7 +23,8 @@ struct FaceView: View {
             .stroke(lineWidth: 5 * finalScale)
             .foregroundColor(.accentColor)
             .rotationEffect(headRotation)
-            .background() // ensures entire screen is responding to gesture
+            // ensures entire screen is responding to gesture
+            .background(backgroundColor)
             .gesture(
                 // Handle "pinch"
                 MagnificationGesture()
@@ -37,7 +39,16 @@ struct FaceView: View {
             )
             .onTapGesture {
                 withAnimation {
-                    eyesOpen.toggle()
+                    switch expression.eyes {
+                    case .open:
+                        expression = FacialExpression(eyes: .closed,
+                                                      mouth: expression.mouth)
+                    case .closed:
+                        expression = FacialExpression(eyes: .open,
+                                                      mouth: expression.mouth)
+                    case .squinting:
+                        break
+                    }
                 }
             }
             .gesture(
@@ -58,19 +69,23 @@ struct FaceView: View {
                         }
                     }
             )
-            .onAppear {
-                isBlinking = true
-            }
-            .onDisappear {
-                isBlinking = false
-            }
             .simultaneousGesture(
                 TapGesture(count: 2)
                     .onEnded {
-                        isBlinking.toggle()
+                        switch expression.eyes {
+                        case .open, .closed:
+                            expression = FacialExpression(eyes: .squinting,
+                                                          mouth: expression.mouth)
+                        case .squinting:
+                            expression = FacialExpression(eyes: squintingEyesOpen ? .open : .closed,
+                                                          mouth: expression.mouth)
+                        }
                     }
             )
-            .onChange(of: isBlinking) { newValue in 
+            .onAppear {
+                blinkIfNeeded()
+            }
+            .onChange(of: expression.eyes) { newValue in
                 blinkIfNeeded()
             }
             .simultaneousGesture(
@@ -86,29 +101,25 @@ struct FaceView: View {
     }
     
     private var eyesOpen: Bool {
-        get {
-            switch expression.eyes {
-            case .open:
-                return true
-            case .closed, .squinting:
-                return false
-            }
-        }
-        nonmutating set {
-            expression = FacialExpression(eyes: newValue ? .open : .closed,
-                                          mouth: expression.mouth)
+        switch expression.eyes {
+        case .open:
+            return true
+        case .closed:
+            return false
+        case .squinting:
+            return squintingEyesOpen
         }
     }
     
     private func blinkIfNeeded() {
-        guard isBlinking else { return }
+        guard expression.eyes == .squinting else { return }
         withAnimation(.easeInOut(duration: 0.4)) {
-            eyesOpen = false
+            squintingEyesOpen = false
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            guard isBlinking else { return }
+            guard expression.eyes == .squinting else { return }
             withAnimation(.easeInOut(duration: 0.4)) {
-                eyesOpen = true
+                squintingEyesOpen = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                 blinkIfNeeded()
@@ -152,10 +163,9 @@ struct FaceView: View {
 
 struct FaceView_Previews: PreviewProvider {
     static var previews: some View {
-        FaceView()
-        
+        FaceView(expression: .constant(FacialExpression(eyes: .open, mouth: .neutral)))
 #if os(iOS)
-        FaceView()
+        FaceView(expression: .constant(FacialExpression(eyes: .open, mouth: .neutral)))
             .previewInterfaceOrientation(.landscapeLeft)
 #endif
     }
