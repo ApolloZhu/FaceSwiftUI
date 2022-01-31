@@ -1,6 +1,6 @@
 //
 //  FaceItApp.swift
-//  Shared
+//  FaceIt
 //
 //  Created by Apollo Zhu on 1/30/22.
 //

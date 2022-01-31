@@ -3,25 +3,20 @@
 //  FaceIt
 //
 //  Created by Apollo Zhu on 1/30/22.
+//  Adapted from 2017 Stanford CS193p open course.
 //
 
 import SwiftUI
 
 struct Face: Shape {
-    let scale: CGFloat
     let eyesOpen: Bool
     /// -1.0 (frown) to 1.0 (smile)
     let mouthCurvature: Double
-    let lineWidth: CGFloat
     
-    public init(scale: CGFloat = 0.9,
-                eyesOpen: Bool = false,
-                mouthCurvature: Double = 0.0,
-                lineWidth: CGFloat = 5) {
-        self.scale = scale
+    public init(eyesOpen: Bool = false,
+                mouthCurvature: Double = 0.0) {
         self.eyesOpen = eyesOpen
         self.mouthCurvature = max(-1, min(mouthCurvature, 1))
-        self.lineWidth = lineWidth
     }
     
     private struct Skull {
@@ -32,7 +27,7 @@ struct Face: Shape {
     func path(in rect: CGRect) -> Path {
         let skull = Skull(
             center: CGPoint(x: rect.midX, y: rect.midY),
-            radius: min(rect.width, rect.height) / 2 * scale
+            radius: min(rect.width, rect.height) / 2
         )
         return Path { path in
             path.addPath(pathForSkull(skull))
@@ -48,7 +43,6 @@ struct Face: Shape {
                         startAngle: .zero, endAngle: .degrees(360),
                         clockwise: true)
         }
-//        .strokedPath(StrokeStyle(lineWidth: lineWidth))
     }
     
     private enum Eye {
@@ -75,11 +69,12 @@ struct Face: Shape {
                             startAngle: .zero, endAngle: .degrees(360),
                             clockwise: true)
             } else {
-                path.move(to: CGPoint(x: eyeCenter.x - eyeRadius, y: eyeCenter.y))
-                path.addLine(to: CGPoint(x: eyeCenter.x + eyeRadius, y: eyeCenter.y))
+                path.move(to: CGPoint(x: eyeCenter.x - eyeRadius,
+                                      y: eyeCenter.y))
+                path.addLine(to: CGPoint(x: eyeCenter.x + eyeRadius,
+                                         y: eyeCenter.y))
             }
         }
-//        .strokedPath(StrokeStyle(lineWidth: lineWidth))
     }
     
     private func pathForMouth(in skull: Skull) -> Path {
@@ -102,7 +97,6 @@ struct Face: Shape {
                           control2: CGPoint(x: end.x - mouthRect.width / 3,
                                             y: start.y + smileOffset))
         }
-//        .strokedPath(StrokeStyle(lineWidth: lineWidth))
     }
     
     
@@ -118,5 +112,7 @@ struct Face: Shape {
 struct Face_Previews: PreviewProvider {
     static var previews: some View {
         Face()
+            .stroke(lineWidth: 5)
+            .scale(0.9)
     }
 }
