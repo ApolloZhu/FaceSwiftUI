@@ -13,6 +13,7 @@ struct FaceView: View {
     @State var scale: CGFloat = 0.9
     @GestureState private var magnifyBy: CGFloat = 1.0
     @State var isBlinking: Bool = false
+    @State var headRotation: Angle = .zero
     
     var body: some View {
         Face(eyesOpen: eyesOpen,
@@ -20,6 +21,7 @@ struct FaceView: View {
             .scale(finalScale)
             .stroke(lineWidth: 5 * finalScale)
             .foregroundColor(.accentColor)
+            .rotationEffect(headRotation)
             .background() // ensures entire screen is responding to gesture
             .gesture(
                 // Handle "pinch"
@@ -71,6 +73,12 @@ struct FaceView: View {
             .onChange(of: isBlinking) { newValue in 
                 blinkIfNeeded()
             }
+            .simultaneousGesture(
+                TapGesture(count: 3)
+                    .onEnded {
+                        shakeHead()
+                    }
+            )
     }
     
     private var finalScale: CGFloat {
@@ -115,6 +123,31 @@ struct FaceView: View {
         .smirk: -0.5,
         .frown: -1.0,
     ]
+    
+    private enum HeadShake {
+        static let angle: Angle = .degrees(30)
+        static let segmentDuration: TimeInterval = 0.4
+    }
+    
+    private func shakeHead() {
+        withAnimation(
+            .easeInOut(duration: HeadShake.segmentDuration)
+        ) {
+            headRotation = HeadShake.angle
+        }
+        withAnimation(
+            .easeInOut(duration: HeadShake.segmentDuration)
+            .delay(HeadShake.segmentDuration)
+        ) {
+            headRotation = -HeadShake.angle
+        }
+        withAnimation(
+            .easeInOut(duration: HeadShake.segmentDuration)
+            .delay(HeadShake.segmentDuration * 2)
+        ) {
+            headRotation = .zero
+        }
+    }
 }
 
 struct FaceView_Previews: PreviewProvider {
