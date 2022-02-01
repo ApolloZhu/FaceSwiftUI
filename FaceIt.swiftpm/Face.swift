@@ -73,7 +73,8 @@ struct Face: Shape {
         }
         let eyeRadius = skull.radius / Ratios.skullRadiusToEyeRadius
         return Path { path in
-            if eyesOpenPercentage > 0 {
+            // > 0 causes the ellipse to glitch
+            if eyesOpenPercentage > 0.01 {
                 let height = eyeRadius * 2 * eyesOpenPercentage
                 path.addEllipse(in: CGRect(
                     x: eyeCenter.x - eyeRadius,

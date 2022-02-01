@@ -16,7 +16,7 @@ struct FaceView: View {
     var body: some View {
         Face(eyesOpen: eyesOpen,
              mouthCurvature: Self.mouthCurvatures[expression.mouth]!)
-            .stroke(lineWidth: 5)
+            .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
             .foregroundColor(.accentColor)
             .onAppear {
                 isSquinting = expression.eyes == .squinting
