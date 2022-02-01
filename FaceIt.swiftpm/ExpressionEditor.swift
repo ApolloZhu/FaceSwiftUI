@@ -23,10 +23,9 @@ struct ExpressionEditor: View {
                     .font(.title3)
                     .multilineTextAlignment(.center)
                 
-                FaceView(expression: $expression,
-                         backgroundColor: Color(uiColor: UIColor.secondarySystemGroupedBackground))
+                FaceView(expression: expression)
                     .aspectRatio(contentMode: .fill)
-                    .allowsHitTesting(false)
+                    .padding()
                 
                 Picker("Eyes", selection: eyes) {
                     ForEach(FacialExpression.Eyes.allCases, id: \.self) { eye in
@@ -72,7 +71,9 @@ struct ExpressionEditor: View {
         Binding {
             expression.eyes
         } set: { newValue in
-            expression = FacialExpression(eyes: newValue, mouth: expression.mouth)
+            withAnimation {
+                expression = FacialExpression(eyes: newValue, mouth: expression.mouth)
+            }
         }
     }
     
@@ -80,10 +81,11 @@ struct ExpressionEditor: View {
         Binding {
             expression.mouth
         } set: { newValue in
-            expression = FacialExpression(eyes: expression.eyes, mouth: newValue)
+            withAnimation {
+                expression = FacialExpression(eyes: expression.eyes, mouth: newValue)
+            }
         }
     }
-    
 }
 
 struct ExpressionEditor_Previews: PreviewProvider {

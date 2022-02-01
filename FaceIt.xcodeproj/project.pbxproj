@@ -11,6 +11,8 @@
 		D242C63F27A7BE0800A64CE8 /* Emotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242C63D27A7BE0800A64CE8 /* Emotion.swift */; };
 		D242C64127A7C01400A64CE8 /* ExpressionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242C64027A7C01400A64CE8 /* ExpressionEditor.swift */; };
 		D242C64227A7C01400A64CE8 /* ExpressionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242C64027A7C01400A64CE8 /* ExpressionEditor.swift */; };
+		D242C64A27A8B19E00A64CE8 /* InteractiveFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242C64927A8B19E00A64CE8 /* InteractiveFaceView.swift */; };
+		D242C64B27A8B19E00A64CE8 /* InteractiveFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242C64927A8B19E00A64CE8 /* InteractiveFaceView.swift */; };
 		D27E73F827A767530024CADA /* FacialExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27E73F727A767530024CADA /* FacialExpression.swift */; };
 		D27E73F927A767530024CADA /* FacialExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27E73F727A767530024CADA /* FacialExpression.swift */; };
 		D2A4C9DC27A7534300AEEAC7 /* FaceItApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A4C9CC27A7534200AEEAC7 /* FaceItApp.swift */; };
@@ -28,6 +30,7 @@
 /* Begin PBXFileReference section */
 		D242C63D27A7BE0800A64CE8 /* Emotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emotion.swift; sourceTree = "<group>"; };
 		D242C64027A7C01400A64CE8 /* ExpressionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionEditor.swift; sourceTree = "<group>"; };
+		D242C64927A8B19E00A64CE8 /* InteractiveFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveFaceView.swift; sourceTree = "<group>"; };
 		D27E73F727A767530024CADA /* FacialExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacialExpression.swift; sourceTree = "<group>"; };
 		D2A4C9CC27A7534200AEEAC7 /* FaceItApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceItApp.swift; sourceTree = "<group>"; };
 		D2A4C9CD27A7534200AEEAC7 /* FaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceView.swift; sourceTree = "<group>"; };
@@ -73,6 +76,7 @@
 				D2C2E74C27A77A5800280C77 /* ContentView.swift */,
 				D242C64027A7C01400A64CE8 /* ExpressionEditor.swift */,
 				D2A4C9CD27A7534200AEEAC7 /* FaceView.swift */,
+				D242C64927A8B19E00A64CE8 /* InteractiveFaceView.swift */,
 				D2A4C9EA27A7535600AEEAC7 /* Face.swift */,
 				D27E73F727A767530024CADA /* FacialExpression.swift */,
 				D242C63D27A7BE0800A64CE8 /* Emotion.swift */,
@@ -200,6 +204,7 @@
 				D2C2E74D27A77A5800280C77 /* ContentView.swift in Sources */,
 				D27E73F827A767530024CADA /* FacialExpression.swift in Sources */,
 				D2A4C9EB27A7535600AEEAC7 /* Face.swift in Sources */,
+				D242C64A27A8B19E00A64CE8 /* InteractiveFaceView.swift in Sources */,
 				D2A4C9DC27A7534300AEEAC7 /* FaceItApp.swift in Sources */,
 				D242C63E27A7BE0800A64CE8 /* Emotion.swift in Sources */,
 				D242C64127A7C01400A64CE8 /* ExpressionEditor.swift in Sources */,
@@ -214,6 +219,7 @@
 				D2C2E74E27A77A5800280C77 /* ContentView.swift in Sources */,
 				D27E73F927A767530024CADA /* FacialExpression.swift in Sources */,
 				D2A4C9EC27A7535600AEEAC7 /* Face.swift in Sources */,
+				D242C64B27A8B19E00A64CE8 /* InteractiveFaceView.swift in Sources */,
 				D2A4C9DD27A7534300AEEAC7 /* FaceItApp.swift in Sources */,
 				D242C63F27A7BE0800A64CE8 /* Emotion.swift in Sources */,
 				D242C64227A7C01400A64CE8 /* ExpressionEditor.swift in Sources */,

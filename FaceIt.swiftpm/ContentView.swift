@@ -24,7 +24,7 @@ struct ContentView: View {
             List {
                 ForEach($emotions) { $emotion in
                     NavigationLink(emotion.name) {
-                        FaceView(expression: Binding {
+                        InteractiveFaceView(expression: Binding {
                             emotion.expression
                         } set: { newValue in
                             emotion = Emotion(id: emotion.id, name: emotion.name, expression: newValue)
