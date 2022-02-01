@@ -9,19 +9,15 @@
 import SwiftUI
 
 struct InteractiveFaceView: View {
-    @Binding var expression: FacialExpression
+    @State var expression: FacialExpression
     @State var scale: CGFloat = 0.9
     @GestureState private var magnifyBy: CGFloat = 1.0
-    @State private var squintingEyesOpen = false
     @State var headRotation: Angle = .zero
     private(set) var backgroundColor = Color(uiColor: UIColor.systemBackground)
     
     var body: some View {
-        Face(eyesOpen: eyesOpen,
-             mouthCurvature: Self.mouthCurvatures[expression.mouth]!)
-            .scale(finalScale)
-            .stroke(lineWidth: 5 * finalScale)
-            .foregroundColor(.accentColor)
+        FaceView(expression: expression)
+            .scaleEffect(finalScale)
             .rotationEffect(headRotation)
             // ensures entire screen is responding to gesture
             .background(backgroundColor)
@@ -72,22 +68,18 @@ struct InteractiveFaceView: View {
             .simultaneousGesture(
                 TapGesture(count: 2)
                     .onEnded {
-                        switch expression.eyes {
-                        case .open, .closed:
-                            expression = FacialExpression(eyes: .squinting,
-                                                          mouth: expression.mouth)
-                        case .squinting:
-                            expression = FacialExpression(eyes: squintingEyesOpen ? .open : .closed,
-                                                          mouth: expression.mouth)
+                        withAnimation {
+                            switch expression.eyes {
+                            case .open, .closed:
+                                expression = FacialExpression(eyes: .squinting,
+                                                              mouth: expression.mouth)
+                            case .squinting:
+                                expression = FacialExpression(eyes: .open,
+                                                              mouth: expression.mouth)
+                            }
                         }
                     }
             )
-            .onAppear {
-                blinkIfNeeded()
-            }
-            .onChange(of: expression.eyes) { newValue in
-                blinkIfNeeded()
-            }
             .simultaneousGesture(
                 TapGesture(count: 3)
                     .onEnded {
@@ -101,41 +93,6 @@ struct InteractiveFaceView: View {
     private var finalScale: CGFloat {
         scale * magnifyBy
     }
-    
-    private var eyesOpen: Bool {
-        switch expression.eyes {
-        case .open:
-            return true
-        case .closed:
-            return false
-        case .squinting:
-            return squintingEyesOpen
-        }
-    }
-    
-    private func blinkIfNeeded() {
-        guard expression.eyes == .squinting else { return }
-        withAnimation(.easeInOut(duration: 0.4)) {
-            squintingEyesOpen = false
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            guard expression.eyes == .squinting else { return }
-            withAnimation(.easeInOut(duration: 0.4)) {
-                squintingEyesOpen = true
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                blinkIfNeeded()
-            }
-        }
-    }
-    
-    private static let mouthCurvatures: [FacialExpression.Mouth : Double] = [
-        .smile: 1.0,
-        .grin: 0.5,
-        .neutral: 0.0,
-        .smirk: -0.5,
-        .frown: -1.0,
-    ]
     
     private enum HeadShake {
         static let angle: Angle = .degrees(30)
@@ -165,6 +122,6 @@ struct InteractiveFaceView: View {
 
 struct InteractiveFaceView_Previews: PreviewProvider {
     static var previews: some View {
-        InteractiveFaceView(expression: .constant(FacialExpression(eyes: .open, mouth: .neutral)))
+        InteractiveFaceView(expression: FacialExpression(eyes: .open, mouth: .neutral))
     }
 }

@@ -22,14 +22,10 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach($emotions) { $emotion in
+                ForEach(emotions) { emotion in
                     NavigationLink(emotion.name) {
-                        InteractiveFaceView(expression: Binding {
-                            emotion.expression
-                        } set: { newValue in
-                            emotion = Emotion(id: emotion.id, name: emotion.name, expression: newValue)
-                        })
-                        .navigationTitle(emotion.name)
+                        InteractiveFaceView(expression: emotion.expression)
+                            .navigationTitle(emotion.name)
                     }
                 }
                 .onDelete { offsets in
