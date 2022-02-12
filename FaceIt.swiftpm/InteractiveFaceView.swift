@@ -10,7 +10,7 @@ import SwiftUI
 
 struct InteractiveFaceView: View {
     @State var expression: FacialExpression
-    @State var scale: CGFloat = 0.9
+    @State var scale: CGFloat = 1
     @GestureState private var magnifyBy: CGFloat = 1.0
     @State var headRotation: Angle = .zero
     private(set) var backgroundColor = Color(uiColor: UIColor.systemBackground)

@@ -8,9 +8,10 @@
 
 import SwiftUI
 
-struct Face: Shape {
+struct Face: InsettableShape {
     private var eyesOpenPercentage: Double
     private var mouthCurvature: Double
+    private var insetAmount: Double = 0.0
     
     /// - Parameters:
     ///   - mouthCurvature: -1.0 (full frown) to 1.0 (full smile)
@@ -31,7 +32,7 @@ struct Face: Shape {
     func path(in rect: CGRect) -> Path {
         let skull = Skull(
             center: CGPoint(x: rect.midX, y: rect.midY),
-            radius: min(rect.width, rect.height) / 2
+            radius: min(rect.width, rect.height) / 2 - insetAmount
         )
         return Path { path in
             path.addPath(pathForSkull(skull))
@@ -39,6 +40,12 @@ struct Face: Shape {
             path.addPath(pathForEye(.right, in: skull))
             path.addPath(pathForMouth(in: skull))
         }
+    }
+    
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var insetted = self
+        insetted.insetAmount += amount
+        return insetted
     }
     
     private struct Skull {
@@ -126,7 +133,6 @@ struct Face: Shape {
 struct Face_Previews: PreviewProvider {
     static var previews: some View {
         Face()
-            .stroke(lineWidth: 5)
-            .scale(0.9)
+            .strokeBorder(lineWidth: 5)
     }
 }
