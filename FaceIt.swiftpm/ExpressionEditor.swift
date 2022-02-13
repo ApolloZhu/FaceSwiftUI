@@ -24,7 +24,6 @@ struct ExpressionEditor: View {
         #else
         NavigationView {
             form
-                .listStyle(.plain)
                 .navigationBarTitleDisplayMode(.inline)
         }
         #endif

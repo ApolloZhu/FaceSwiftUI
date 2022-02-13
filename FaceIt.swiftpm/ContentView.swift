@@ -56,6 +56,8 @@ struct ContentView: View {
                     emotions.append(emotion)
                 }
             }
+            
+            Text("Select an emotion from the list of emotions to display here.")
         }
     }
 }
