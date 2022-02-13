@@ -35,6 +35,7 @@ struct ContentView: View {
                     emotions.move(fromOffsets: source, toOffset: destination)
                 }
             }
+            .listStyle(.sidebar)
             .navigationTitle("Emotions")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -44,12 +45,14 @@ struct ContentView: View {
                         Label("Add", systemImage: "plus")
                     }
                 }
+                #if os(iOS)
                 ToolbarItem(placement: .navigation) {
                     EditButton()
                 }
+                #endif
             }
             .sheet(isPresented: $showEditor) {
-                ExpressionEditor() { emotion in
+                ExpressionEditor { emotion in
                     emotions.append(emotion)
                 }
             }

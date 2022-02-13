@@ -10,17 +10,16 @@ import SwiftUI
 
 struct InteractiveFaceView: View {
     @State var expression: FacialExpression
-    @State var scale: CGFloat = 1
+    @State var scale: CGFloat = 0.9
     @GestureState private var magnifyBy: CGFloat = 1.0
     @State var headRotation: Angle = .zero
-    private(set) var backgroundColor = Color(uiColor: UIColor.systemBackground)
     
     var body: some View {
         FaceView(expression: expression)
             .scaleEffect(finalScale)
             .rotationEffect(headRotation)
             // ensures entire screen is responding to gesture
-            .background(backgroundColor)
+            .contentShape(Rectangle())
             .gesture(
                 // Handle "pinch"
                 MagnificationGesture()

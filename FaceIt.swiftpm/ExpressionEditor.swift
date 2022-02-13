@@ -15,54 +15,68 @@ struct ExpressionEditor: View {
     let onSave: (Emotion) -> ()
     
     var body: some View {
+        #if os(macOS)
+        ScrollView {
+            // FIXME: can't get initial window size to display everything
+            form
+                .padding()
+        }
+        #else
         NavigationView {
-            Form {
-                TextField("Name", text: $name)
-                    .textFieldStyle(.plain)
-                    .textInputAutocapitalization(.words)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                
-                FaceView(expression: expression)
-                    .aspectRatio(contentMode: .fill)
-                    .padding()
-                
-                Picker("Eyes", selection: eyes) {
-                    ForEach(FacialExpression.Eyes.allCases, id: \.self) { eye in
-                        Text(eye.localizedName)
-                            .tag(eye)
-                    }
+            form
+                .listStyle(.plain)
+                .navigationBarTitleDisplayMode(.inline)
+        }
+        #endif
+    }
+    
+    private var form: some View {
+        Form {
+            TextField("Name", text: $name)
+                .textFieldStyle(.plain)
+            #if !os(macOS)
+                .textInputAutocapitalization(.words)
+            #endif
+                .font(.title3)
+                .multilineTextAlignment(.center)
+            
+            FaceView(expression: expression)
+                .aspectRatio(contentMode: .fill)
+                .padding()
+            
+            Picker("Eyes", selection: eyes) {
+                ForEach(FacialExpression.Eyes.allCases, id: \.self) { eye in
+                    Text(eye.localizedName)
+                        .tag(eye)
                 }
-                .pickerStyle(.segmented)
-                
-                Picker("Mouth", selection: mouth) {
-                    ForEach(FacialExpression.Mouth.allCases, id: \.self) { mouth in
-                        Text(mouth.localizedName)
-                            .tag(mouth)
-                    }
-                }
-                .pickerStyle(.segmented)
             }
-            .listStyle(.plain)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    } label: {
-                        Text("Cancel")
-                    }
+            .pickerStyle(.segmented)
+            
+            Picker("Mouth", selection: mouth) {
+                ForEach(FacialExpression.Mouth.allCases, id: \.self) { mouth in
+                    Text(mouth.localizedName)
+                        .tag(mouth)
                 }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        onSave(Emotion(name: name, expression: expression))
-                        dismiss()
-                    } label: {
-                        Text("Done")
-                    }
-                    .disabled(name.isEmpty)
+            }
+            .pickerStyle(.segmented)
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(role: .cancel) {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
                 }
+            }
+            
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    onSave(Emotion(name: name, expression: expression))
+                    dismiss()
+                } label: {
+                    Text("Done")
+                }
+                .disabled(name.isEmpty)
             }
         }
     }
